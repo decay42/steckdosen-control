@@ -1,5 +1,7 @@
 const express = require('express')
 const rcswitch = require('rcswitch')
+const cors = require('cors')
+const bodyParser = require('body-parser')
 
 const portNumber = 3000
 
@@ -7,14 +9,18 @@ rcswitch.enableTransmit(4)
 
 const app = express()
 
+app.use(bodyParser.json())
+app.use(cors())
+
 app.listen(portNumber)
 
 console.log(`Running on port ${portNumber}`)
 
-app.get('/switch/:systemCode/:unitCode/:state', function (req, res) {
-  const switchMethod = +req.params.state ? 'switchOn' : 'switchOff'
+app.post('/switch', function (req, res) {
+  const {state, unitCode, systemCode} = req.body
 
-  rcswitch[switchMethod](req.params.systemCode, +req.params.unitCode)
+  const switchMethod = +state ? 'switchOn' : 'switchOff'
 
-  res.send(`Switched ${+req.params.state ? 'on' : 'off'}!`)
+  rcswitch[switchMethod](systemCode, +unitCode)
+  res.send(`Switched ${+state ? 'on' : 'off'}!`)
 })
