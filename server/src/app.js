@@ -12,7 +12,7 @@ app.use(bodyParser.json())
 app.use(cors())
 app.use(morgan('combined'))
 
-app.use('/api', routes)
+app.use('/printerapi', routes)
 
 app.listen(portNumber)
 
